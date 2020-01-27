@@ -8,6 +8,11 @@ import java.util.Random;
 import java.util.Map;
 import java.util.HashMap;
 
+import android.media.MediaPlayer;
+
+import com.yaoxin.fmaster.MP3Player;
+
+
 
 public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
 {
@@ -15,9 +20,13 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
     private ProgressBar pgbar;
     private Random rnd = new Random();
     private Map<Integer, String> map = new HashMap<Integer,String>();
-    private int last = -1;
+    private Map<Integer, Integer> map2 = new HashMap<Integer,Integer>();
 
-    public MyAsyncTask(TextView txt,ProgressBar pgbar)
+    private int last = -1;
+    private MP3Player mPlayer;
+
+
+    public MyAsyncTask(TextView txt,ProgressBar pgbar, MP3Player p)
     {
         super();
         this.txt = txt;
@@ -31,6 +40,18 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
         this.map.put(5, "A");
         this.map.put(6, "B");
 
+        this.map2.put(0, R.raw.c);
+        this.map2.put(1, R.raw.d);
+        this.map2.put(2, R.raw.e);
+        this.map2.put(3, R.raw.f);
+        this.map2.put(4, R.raw.g);
+        this.map2.put(5, R.raw.a);
+        this.map2.put(6, R.raw.b);
+
+
+
+        this.mPlayer = p;
+
     }
 
     public class DelayOperator {
@@ -38,7 +59,7 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
         public void delay()
         {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -69,8 +90,12 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
         last = a;
         txt.setText(this.map.get(a));
 
+        this.mPlayer.init(this.map2.get(a));
+        this.mPlayer.play();
+
+
         int value = values[0];
-        value %= 11;
+        value %= 12;
         pgbar.setProgress(value*10);
     }
 }
