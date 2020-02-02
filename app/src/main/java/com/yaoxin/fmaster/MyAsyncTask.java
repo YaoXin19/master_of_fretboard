@@ -25,8 +25,10 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
     private int last = -1;
     private MP3Player mPlayer;
 
+    private int time;
 
-    public MyAsyncTask(TextView txt,ProgressBar pgbar, MP3Player p)
+
+    public MyAsyncTask(int time, TextView txt,ProgressBar pgbar, MP3Player p)
     {
         super();
         this.txt = txt;
@@ -52,14 +54,20 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
 
         this.mPlayer = p;
 
+        this.time = time;
     }
 
     public class DelayOperator {
+        private int time;
+
+        public DelayOperator(int time) {
+            this.time = time;
+        }
         //延时操作,用来模拟下载
         public void delay()
         {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(this.time);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -70,12 +78,12 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
     //触发onProgressUpdate对UI进行操作
     @Override
     protected String doInBackground(Integer... params) {
-        DelayOperator dop = new DelayOperator();
+        DelayOperator dop = new DelayOperator(this.time);
         int i = 0;
         for (i = 1;i <= Integer.MAX_VALUE;i+=1)
         {
-            dop.delay();
             publishProgress(i);
+            dop.delay();
         }
         return  i + params[0].intValue() + "";
     }
@@ -84,9 +92,9 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
     //运行在UI线程中,可对UI控件进行操作
     @Override
     protected void onProgressUpdate(Integer... values) {
-        int a = rnd.nextInt(6);
+        int a = rnd.nextInt(7);
         while (a == this.last)
-            a = rnd.nextInt(6);
+            a = rnd.nextInt(7);
         last = a;
         txt.setText(this.map.get(a));
 
@@ -95,7 +103,7 @@ public class MyAsyncTask extends AsyncTask<Integer,Integer,String>
 
 
         int value = values[0];
-        value %= 12;
+        value %= 11;
         pgbar.setProgress(value*10);
     }
 }
